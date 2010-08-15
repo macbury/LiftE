@@ -5,6 +5,7 @@ class LiftEServer < GServer
 
 		@clients = {}
 		@player_controller = PlayerController.new(self)
+		@sync_mutex = Mutex.new
 	end
  
 	def clients
@@ -12,7 +13,7 @@ class LiftEServer < GServer
 	end
  
 	def log(msg)
-		puts msg
+		$logger.info msg
 	end
  
 	def serve(client)
@@ -40,6 +41,7 @@ class LiftEServer < GServer
 						args += rest_of_command.split("|")
 						command += rest_of_command
 					end
+					
 					
 					if controller =~ /PLAYER/i
 						@player_controller.exec_command(command, player)

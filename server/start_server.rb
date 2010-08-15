@@ -4,6 +4,7 @@ require "yaml"
 require 'base64'
 require "./game_logic/lib/gserver"
 require "../shared/lib/remote_object"
+require "../shared/lib/remote_methods"
 require "./game_logic/models/player"
 
 require "./game_logic/lib/server_controller"
