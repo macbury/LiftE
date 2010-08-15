@@ -11,6 +11,7 @@ class Actor < Chingu::GameObject
     @frame_name = :left
 		@moving = false
 		update
+		
 	end
 	
   def move_left

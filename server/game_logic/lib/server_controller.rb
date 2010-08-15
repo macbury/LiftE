@@ -9,6 +9,14 @@ class ServerController
 		self.server_contex.clients
 	end
 	
+	def brodcast(msg,owner)
+		self.server_contex.brodcast(msg, owner)
+	end
+	
+	def send_to(players, msg)
+		self.server_contex.send_to(players, msg)
+	end
+	
 	def log(message)
 		puts message
 	end
@@ -18,6 +26,9 @@ class ServerController
 		arg.delete_at(0)
 		method = arg[0]
 		arg.delete_at(0)
+		arg.pop if arg.last =~ /END/i
+		
+		arg = arg.map { |raw_arg| Base64.decode64(raw_arg).strip }
 		arg.insert(0, player)
 		
 		method_is_avaliable = false

@@ -1,6 +1,7 @@
 require "digest/sha2"
 
 class Player
+	include RemoteObject
 	attr_accessor :email
 	
 	def initialize(new_email)
