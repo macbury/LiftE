@@ -1,0 +1,11 @@
+{
+	"image": "TileA5.png",
+	"columns": 8,
+	"rows": 16,
+	"tiles": [
+		{ "passable": true, "layer": 0, "id": 0 },
+		{ "passable": true, "layer": 0, "id": 1 },
+		{ "passable": true, "layer": 0, "id": 2 },
+		{ "passable": true, "layer": 0, "id": 3 }
+	]
+}

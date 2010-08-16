@@ -1,0 +1,28 @@
+{
+	"zone": "Plac zabaw",
+	"name": "Plac zabaw",
+	
+	"width": 25,
+	"height": 19,
+	
+	"music": "Town1.mid",
+	
+	"chipsets": [
+		"world"
+	],
+	
+	"map": {
+		"layer1": [
+			{ "x":0, "y": 0, "chipset": "world", "id": 0 },
+			{ "x":1, "y": 1, "chipset": "world", "id": 0 },
+			{ "x":2, "y": 2, "chipset": "world", "id": 0 }
+		],
+		
+		"layer2": [],
+		"layer3": []
+	},
+	
+	"game_objects": [
+		{ "x": 3, "y": 3, "type": "NPC", "id": "$246SADSA", "image": "warrior" }
+	]
+}

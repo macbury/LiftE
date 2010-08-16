@@ -5,11 +5,17 @@ class LiftE < Gosu::Window
 	def initialize
 		self.player_controller = PlayerController.new(self)
 		@game_objects = []
-		@@sync_mutex.synchronize { $window = self }
+		$window = self
 		@last_value = 0
 		@milliseconds_since_last_tick = 0
     super(800,600,!DEV_MODE)
 		login
+	end
+	
+	def load_tiles(image_path, width, height, something)
+		$logger.info("Loading file #{image_path}")
+		
+		Gosu::Image.load_tiles(self, image_path, width, height, something)
 	end
 	
 	def add_game_object(new_game_object)
@@ -32,6 +38,7 @@ class LiftE < Gosu::Window
 	end
 	
 	def draw
+		self.player_controller.draw
 		@game_objects.each do |go|
 			go.draw
 		end
@@ -75,7 +82,7 @@ class LiftE < Gosu::Window
 	end
 	
 	def serve(client)
-		self.player_controller.server_current_actor
+		self.player_controller.server_get_info_for_current_actor
 		
 		while true
 			command = @client.readline.strip
@@ -90,10 +97,20 @@ class LiftE < Gosu::Window
 			
 			$logger.info "Recived command #{command}" if DEV_MODE
 			
-			if controller =~ /PLAYER/i
-				self.player_controller.exec_command(command)
+			begin
+				if controller =~ /PLAYER/i
+					self.player_controller.quee_command(command)
+				end
+			rescue Exception => e
+				$logger.error e.to_s
+				$logger.error(e.backtrace.join("\n"))
 			end
+			
 		end
 	end
-
+	
+	def self.root
+		FILE_ROOT
+	end
+	
 end

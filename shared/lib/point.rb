@@ -33,5 +33,12 @@ class Point
 	def to_tile_cords
 		[tile_x, tile_y]
 	end
-
+	
+	def self.pixels_to_tiles(tx,ty)
+		[(tx / TILE_WIDTH).round, (ty / TILE_HEIGHT).round]
+	end
+	
+	def self.tile_to_pixels(tx,ty)
+		[tx * TILE_WIDTH, ty * TILE_HEIGHT]
+	end
 end

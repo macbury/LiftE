@@ -21,13 +21,17 @@ class GameObject
 		else
 			@position = Point.new(options[:x] || 0, options[:y] || 0)
 		end
-    @zorder = options[:zorder] || 100
+    @zorder = options[:zorder] || 3
 
 		$window.add_game_object(self)
   end
 	
-	def update(deltaTime=0)
+	def load_resources
 		
+	end
+	
+	def update(deltaTime=0)
+		load_resources if @image.nil?
 	end
 	
   def width
@@ -63,6 +67,7 @@ class GameObject
   end
 
   def draw
+		load_resources if @image.nil?
     @image.draw(@position.x, @position.y, @zorder, 1, 1) if @image && @visible
   end
  

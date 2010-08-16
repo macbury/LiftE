@@ -4,6 +4,12 @@ class GameController
 	
 	attr_accessor :engine
 	
+	@@command_quee = []
+	
+	def quee_command(command)
+		@@command_quee << command
+	end
+	
 	def initialize(engine)
 		self.engine = engine
 	end

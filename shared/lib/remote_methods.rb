@@ -1,10 +1,6 @@
 module RemoteMethods
 	
-	@@command_quee = []
-	
-	def quee_command(command)
-		@@command_quee << command
-	end
+
 	
 	def exec_command(request_string, player=nil)
 		arg = request_string.split("|")

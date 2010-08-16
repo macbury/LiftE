@@ -11,6 +11,8 @@ include Gosu
 HOST = "127.0.0.1"
 PORT = "9666"
 
+FILE_ROOT = File.dirname(File.expand_path($0))
+
 $stderr.sync = $stdout.sync = true 
 
 $logger = Logger.new(STDOUT)
