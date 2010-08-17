@@ -18,7 +18,7 @@ class Chipset
 		
 		$logger.info "Loading chipset image #{chipset_image_path}"
 
-		image_tiles = $window.load_tiles(chipset_image_path, cd["columns"].to_i * -1, cd["rows"].to_i * -1, true)
+		image_tiles = Gosu::Image.load_tiles($window, chipset_image_path, cd["columns"].to_i * -1, cd["rows"].to_i * -1, true)
 		
 		$logger.info "Loaded #{image_tiles.size} tiles"
 		

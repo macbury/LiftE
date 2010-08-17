@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+   
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pl">
+<head>
+	<title>LiftE - World Editor</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script src="/javascripts/lib/jquery-1.4.2.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/javascripts/lib/jquery-ui-1.8.2.custom.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="/javascripts/map.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/javascripts/point.js" type="text/javascript" charset="utf-8"></script>
+	<script src="javascripts/builder.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="/javascripts/map_editor.js" type="text/javascript" charset="utf-8"></script>
+	
+	
+	<link rel="stylesheet" href="stylesheets/ui.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<link rel="stylesheet" href="stylesheets/main.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<script type="text/javascript" charset="utf-8">
+		$(document).ready(function () {
+			map_editor.init(<%= @chipsets.to_json %>);
+			builder.init();
+			
+		});
+	</script>
+</head>
+
+<body>
+	<div class="header toolbar ui-helper-clearfix">
+		<div class="buttonset ui-helper-clearfix buttonset-right">
+			<a href="#" class="button ui-state-default ui-corner-all button-icon-left">
+				<span class="ui-icon ui-icon-power"></span>
+				Logout
+			</a>
+		</div>
+		<div class="buttonset ui-helper-clearfix" style="width: 105px">
+			<a href="javascript:builder.newDialog()" class="button ui-state-default button-icon-solo ui-corner-all"><span class="ui-icon ui-icon-document"></span> New</a>
+			<a href="javascript:builder.openDialog()"" class="button ui-state-default button-icon-solo ui-corner-all"><span class="ui-icon ui-icon-folder-open"></span> Open</a>
+			<a href="#" class="button ui-state-default button-icon-solo ui-corner-all"><span class="ui-icon ui-icon-disk"></span> Save</a>
+
+		</div>
+		
+		<div class="buttonset buttonset-single ui-helper-clearfix" style="width: 275px">
+			<button class="button ui-state-default ui-state-active ui-priority-primary ui-corner-left">Layer 1</button>
+			<button class="button ui-state-default ui-priority-primary">Layer 2</button>
+			<button class="button ui-state-default ui-priority-primary">Layer 3</button>
+			<button class="button ui-state-default ui-priority-primary ui-corner-right">Game Objects</button>
+		</div>
+		
+		<select id="chipset_name">
+		</select>
+	</div>
+	
+	<div id="progress_indicator"></div>
+	
+	<div id="open_dialog" class="hidden">
+		<ul>
+			
+		</ul>
+	</div>
+	
+	<div id="editor">
+		<canvas id="map_editor"></canvas>
+	</div>
+	
+	<div class="scroll-bar-wrap right ui-widget-content">
+		<div class="scroll-bar" id="right_scroll_bar"></div>
+	</div>
+	
+	<div class="scroll-bar-wrap bottom ui-widget-content">
+		<div class="scroll-bar" id="bottom_scroll_bar"></div>
+	</div>
+	
+	<div class="hidden" id="chipsets" title="Chipsets">
+		<canvas id="chipset_select_canvas" width="256" height="320"></canvas>
+	</div>
+
+</body>
+</html>

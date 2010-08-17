@@ -26,11 +26,14 @@ class Map
 			self.chipsets[chipset_name] = Chipset.new(chipset_name)
 		end
 		
-		clear_layers
+		self.layers = { :layer1 => Layer.new(self.width, self.height), 
+										:layer2 => Layer.new(self.width, self.height), 
+										:layer3 => Layer.new(self.width, self.height) }
+		
 		rmc["map"].each do |layer_name, layer_content|
-			self.layers[layer_name] = Array.new(self.width) { Array.new(self.height) }
 			layer_content.each do |raw_tile|
-				self.layers[layer_name][raw_tile["x"]][raw_tile["y"]] = self.chipsets[raw_tile["chipset"]].tiles[raw_tile["id"]]
+				tile = self.chipsets[raw_tile["chipset"]].tiles[raw_tile["id"]]
+				self.layers[layer_name.to_sym].set_tile_for_cords(tile, raw_tile["x"], raw_tile["y"])
 			end
 		end
 		
@@ -39,16 +42,12 @@ class Map
 		$logger.info "Visible tiles for this resolution: #{self.visible_x}x#{self.visible_y}"
 	end
 	
-	def clear_layers
-		self.layers = { :layer1 => [], :layer2 => [], :layer3 => [] }
-	end
-	
 	def draw
-		self.layers.each do |layer_name, layer_content|
+		self.layers.each do |layer_name, layer_controller|
 			for	x in (0..self.visible_x)
 				for	y in (0..self.visible_y)
 					pixel_x, pixel_y = Point.tile_to_pixels(x, y)
-					tile = self.layers[layer_name][x][y]
+					tile = layer_controller.tile_for_cords(x,y)
 					next if tile.nil?
 					tile.image.draw(pixel_x, pixel_y, @@layer_z_order[layer_name])
 				end

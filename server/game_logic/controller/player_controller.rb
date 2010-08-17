@@ -9,7 +9,6 @@ class PlayerController < ServerController
 	end
 	
 	def get_info_for_current_actor(player)
-		log("Sending info for player #{player.id}")
 		send_to(player, player.client_start_game(player.id, {
 			:charset => "warrior.png",
 			:name => "Cragmorton",

@@ -1,9 +1,9 @@
 {
-	"zone": "Plac zabaw",
+	"zone": "Plansza startowa",
 	"name": "Plac zabaw",
 	
-	"width": 25,
-	"height": 19,
+	"width": 50,
+	"height": 50,
 	
 	"music": "Town1.mid",
 	
@@ -13,13 +13,16 @@
 	
 	"map": {
 		"layer1": [
-			{ "x":0, "y": 0, "chipset": "world", "id": 0 },
-			{ "x":1, "y": 1, "chipset": "world", "id": 0 },
-			{ "x":2, "y": 2, "chipset": "world", "id": 0 }
+			{ "x":0, "y": 0, "chipset": "world", "id": 1 },
+			{ "x":1, "y": 1, "chipset": "world", "id": 2 },
+			{ "x":2, "y": 2, "chipset": "world", "id": 3 }
 		],
 		
-		"layer2": [],
-		"layer3": []
+		"layer3": [
+			{ "x":5, "y": 5, "chipset": "world", "id": 2 }
+		],
+		
+		"layer2": []
 	},
 	
 	"game_objects": [

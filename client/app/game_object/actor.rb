@@ -2,7 +2,8 @@ class Actor < GameObject
 	@@speed = 1
 	@@waypoints = []
 	
-	def load_resources
+	def initialize(options={})
+		super(options)
 		@animation = Animation.new(:file => "./assets/graphics/characters/warrior.png", :size => [-3 ,-4], :loop => true, :delay => 250)
     @animation.frame_names = { :up => 9..11, :down => [1,0,1,2], :left => 3..5, :right => 6..8 }
     @frame_name = :down
@@ -35,7 +36,6 @@ class Actor < GameObject
   end
 	
 	def update(delta_time=0)
-		super(delta_time)
 		if @moving
 			@image = @animation[@frame_name].next
 		else

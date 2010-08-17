@@ -9,13 +9,13 @@ class Point
 		self.y = new_y
 	end
 	
-	def set_tile_pos(new_x,new_y)
+	def set_tile_pos(new_x, new_y)
 		self.tile_x = new_x
 		self.tile_y = new_y
 	end
 	
 	def tile_x
-		(self.x / TILE_WIDTH).round
+		(self.x / TILE_WIDTH).to_i
 	end
 	
 	def tile_x=(new_x)
@@ -23,7 +23,7 @@ class Point
 	end
 	
 	def tile_y
-		(self.y / TILE_HEIGHT).round
+		(self.y / TILE_HEIGHT).to_i
 	end
 	
 	def tile_y=(new_y)
@@ -35,7 +35,7 @@ class Point
 	end
 	
 	def self.pixels_to_tiles(tx,ty)
-		[(tx / TILE_WIDTH).round, (ty / TILE_HEIGHT).round]
+		[(tx / TILE_WIDTH).to_i, (ty / TILE_HEIGHT).to_i]
 	end
 	
 	def self.tile_to_pixels(tx,ty)

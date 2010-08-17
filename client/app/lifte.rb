@@ -8,14 +8,9 @@ class LiftE < Gosu::Window
 		$window = self
 		@last_value = 0
 		@milliseconds_since_last_tick = 0
+		@fps_counter = FPSCounter.new
     super(800,600,!DEV_MODE)
 		login
-	end
-	
-	def load_tiles(image_path, width, height, something)
-		$logger.info("Loading file #{image_path}")
-		
-		Gosu::Image.load_tiles(self, image_path, width, height, something)
 	end
 	
 	def add_game_object(new_game_object)
@@ -27,8 +22,11 @@ class LiftE < Gosu::Window
 	end
 	
 	def update
+		self.caption = "LiftE - [#{@fps_counter.fps} FPS]" if DEV_MODE
 		@milliseconds_since_last_tick = Gosu::milliseconds - @last_value
 		@last_value = Gosu::milliseconds
+		
+		@fps_counter.register_tick
 		
 		@player_controller.update(self.delta_time)
 		

@@ -1,8 +1,8 @@
 {
-	"image": "TileA5.png",
-	"columns": 8,
-	"rows": 16,
-	"name": "world",
+	"image": "TileA4.png",
+	"columns": 16,
+	"name": "walls",
+	"rows": 15,
 	"tiles": [
 		{ "passable": true, "id": 0 },
 		{ "passable": true, "id": 1 },

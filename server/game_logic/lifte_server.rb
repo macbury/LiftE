@@ -42,6 +42,7 @@ class LiftEServer < GServer
 						command += rest_of_command
 					end
 					
+					$logger.info "Recived command: #{command} from player #{player.id}" if DEV_MODE
 					
 					if controller =~ /PLAYER/i
 						@player_controller.exec_command(command, player)
@@ -60,6 +61,7 @@ class LiftEServer < GServer
 	end
  
 	def brodcast(command, owner=nil)
+		$logger.info "Brodcasting command: #{command}" if DEV_MODE
 		@clients.each do |player, client|
 			client.puts(command) unless player == owner
 		end
@@ -67,10 +69,12 @@ class LiftEServer < GServer
  
 	def send_to(players, command)
 		if players.class == Array
+			$logger.info "Sending command: #{command} to players: #{players.map(&:id)}" if DEV_MODE
 			@clients.each do |player, client|
 				client.puts(command) if players.include?(player)
 			end
 		else
+			$logger.info "Sending command: #{command} to player: #{players.id}" if DEV_MODE
 			@clients.each do |player, client|
 				client.puts(command) if player == players
 			end

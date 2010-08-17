@@ -26,12 +26,8 @@ class GameObject
 		$window.add_game_object(self)
   end
 	
-	def load_resources
-		
-	end
-	
 	def update(deltaTime=0)
-		load_resources if @image.nil?
+
 	end
 	
   def width
