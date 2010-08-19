@@ -12,6 +12,11 @@ class GameController
 	
 	def initialize(engine)
 		self.engine = engine
+		setup
+	end
+	
+	def setup
+		
 	end
 	
 	def send_command(msg)

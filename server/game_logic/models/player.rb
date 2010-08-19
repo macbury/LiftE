@@ -2,14 +2,18 @@ require "digest/sha2"
 
 class Player
 	include RemoteObject
-	attr_accessor :email
+	attr_accessor :email, :x, :y, :map, :id
 	
 	def initialize(new_email)
 		self.email = new_email
+		self.x = 5
+		self.y = 4
+		self.map = "MAP00001"
+		self.id = (rand * 999999).round
 	end
 	
-	def id
-		28423
+	def ==(other)
+		other.respond_to?(:id) && self.id == other.id
 	end
 	
 	def self.authorize(new_email, new_password)
@@ -19,5 +23,7 @@ class Player
 			false
 		end
 	end
+	
+	
 	
 end

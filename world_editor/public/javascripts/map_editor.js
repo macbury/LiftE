@@ -22,6 +22,12 @@ var map_editor = {
 		
 		this.calculate_draw_size();
 		
+		$('#layers button').click(function () {
+			self.current_layer = "layer" + $(this).attr("layer");
+			self.redraw();
+			return false;
+		});
+		
 		$(this.map_canvas).mousemove(function(e){
 			var offset = $(this).offset();
 
@@ -42,6 +48,10 @@ var map_editor = {
 			self.select_chipset(mp);
 		});
 		
+		$(this.map_canvas).bind("contextmenu", function(e) {
+			e.preventDefault();
+		});
+		
 		$(this.map_canvas).mousedown(function(e){
 			var offset = $(this).offset();
 
@@ -49,8 +59,15 @@ var map_editor = {
 			var y = e.pageY - offset.top;
 			var mp = new Point(x, y);
 			
-			self.map.set_tile_for_cords(self.current_layer, self.current_chipset["name"], self.selected_tile, mp.tile_x(), mp.tile_y());
+			if( (!$.browser.msie && e.button == 0) || ($.browser.msie && e.button == 1) ) {
+				self.map.set_tile_for_cords(self.current_layer, self.current_chipset["name"], self.selected_tile, mp.tile_x(), mp.tile_y());
+				//self.map.fill_tile_for_cords(self.current_layer, self.current_chipset["name"], self.selected_tile);
+			} else if(e.button == 2){
+				self.map.delete_tile_for_cords(self.current_layer, mp.tile_x(), mp.tile_y());
+			}
 			self.redraw();
+			
+			return false;
 		});
 		
 		$(window).resize(function(){
@@ -95,13 +112,22 @@ var map_editor = {
 		this.redraw();
 	},
 	
+	save_map: function(){
+		var self = this;
+		$.ajax({
+		  type: 'POST',
+		  url: "/save_map/",
+		  data: { file: self.map.file_name, map_content: self.map.content() }
+		});
+	},
+	
 	redraw: function(){
 		var ctx = map_editor.map_canvas[0].getContext("2d");
 		ctx.fillStyle = "rgb(0,0,0)";  
 		ctx.fillRect (0, 0, this.width, this.height);
 		
 		if (map_editor.map != null) {
-			map_editor.map.draw(ctx, 0, 0, 0, this.visible_x, this.visible_y);
+			map_editor.map.draw(ctx, self.current_layer, 0, 0, this.visible_x, this.visible_y);
 		}
 		
 		//map_editor.draw_cursor();

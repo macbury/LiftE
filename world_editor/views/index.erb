@@ -36,20 +36,24 @@
 		</div>
 		<div class="buttonset ui-helper-clearfix" style="width: 105px">
 			<a href="javascript:builder.newDialog()" class="button ui-state-default button-icon-solo ui-corner-all"><span class="ui-icon ui-icon-document"></span> New</a>
-			<a href="javascript:builder.openDialog()"" class="button ui-state-default button-icon-solo ui-corner-all"><span class="ui-icon ui-icon-folder-open"></span> Open</a>
-			<a href="#" class="button ui-state-default button-icon-solo ui-corner-all"><span class="ui-icon ui-icon-disk"></span> Save</a>
+			<a href="javascript:builder.openDialog()" class="button ui-state-default button-icon-solo ui-corner-all"><span class="ui-icon ui-icon-folder-open"></span> Open</a>
+			<a href="javascript:map_editor.save_map()" class="button ui-state-default button-icon-solo ui-corner-all"><span class="ui-icon ui-icon-disk"></span> Save</a>
 
 		</div>
 		
-		<div class="buttonset buttonset-single ui-helper-clearfix" style="width: 275px">
-			<button class="button ui-state-default ui-state-active ui-priority-primary ui-corner-left">Layer 1</button>
-			<button class="button ui-state-default ui-priority-primary">Layer 2</button>
-			<button class="button ui-state-default ui-priority-primary">Layer 3</button>
+		<div class="buttonset buttonset-single ui-helper-clearfix" style="width: 100px">
+			<button class="button ui-state-default ui-state-active ui-priority-primary ui-corner-left">Pencil</button>
+			<button class="button ui-state-default ui-priority-primary ui-corner-right">Fill</button>
+		</div>
+		
+		<div class="buttonset buttonset-single ui-helper-clearfix" id="layers" style="width: 275px">
+			<button layer="1" class="button ui-state-default ui-state-active ui-priority-primary ui-corner-left">Layer 1</button>
+			<button layer="2" class="button ui-state-default ui-priority-primary">Layer 2</button>
+			<button layer="3" class="button ui-state-default ui-priority-primary">Layer 3</button>
 			<button class="button ui-state-default ui-priority-primary ui-corner-right">Game Objects</button>
 		</div>
 		
-		<select id="chipset_name">
-		</select>
+		<select id="chipset_name"></select>
 	</div>
 	
 	<div id="progress_indicator"></div>

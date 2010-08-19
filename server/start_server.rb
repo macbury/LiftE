@@ -2,19 +2,26 @@ require "rubygems"
 require "logger"
 require "yaml"
 require 'base64'
+require "json"
 require "./game_logic/lib/gserver"
 require "../shared/lib/remote_object"
 require "../shared/lib/remote_methods"
 require "./game_logic/models/player"
 
+require "./game_logic/lib/tile"
+require "./game_logic/lib/path_finder"
+require "./game_logic/lib/vmap"
 require "./game_logic/lib/server_controller"
 require "./game_logic/controller/player_controller"
+require "./game_logic/controller/map_controller"
 
 require "./game_logic/lifte_server"
 
 $stderr.sync = $stdout.sync = true 
 
 DEV_MODE = ARGV.include?("--dev")
+
+FILE_ROOT = File.dirname(File.expand_path($0))
 
 $logger = Logger.new(STDOUT)
 

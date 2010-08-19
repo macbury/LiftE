@@ -1,17 +1,24 @@
 class LiftE < Gosu::Window
-	attr_accessor :player_controller
+	attr_accessor :player_controller, :map_controller
 	@@sync_mutex = Mutex.new
 	
 	def initialize
 		self.player_controller = PlayerController.new(self)
+		self.map_controller = MapController.new(self)
 		@game_objects = []
 		$window = self
 		@last_value = 0
 		@milliseconds_since_last_tick = 0
 		@fps_counter = FPSCounter.new
+		
     super(800,600,!DEV_MODE)
+
+		$logger.info "Loading cursor..."
+		@cursor = Gosu::Image.new(self, File.join([FILE_ROOT, 'assets/graphics/gui/cursor.png']), false)
+
 		login
 	end
+	
 	
 	def add_game_object(new_game_object)
 		@game_objects << new_game_object unless @game_objects.include?(new_game_object)
@@ -35,11 +42,31 @@ class LiftE < Gosu::Window
 		end
 	end
 	
+	def button_up(id)
+		if id == Gosu::MsRight
+			p = Point.new(self.mouse_x, self.mouse_y)
+			$logger.info "Clicked on tile x:#{p.tile_x} y:#{p.tile_y}"
+			self.map_controller.server_go_to_cords(p.tile_x, p.tile_y)
+    end
+	end
+	
 	def draw
 		self.player_controller.draw
 		@game_objects.each do |go|
 			go.draw
 		end
+		
+		@cursor.draw(self.mouse_x, self.mouse_y, 1000)
+	end
+	
+	def disconnect
+		$logger.info "You have been disconnected!"
+		@client.close unless @client.nil?
+		@client_thread.exit unless @client_thread.nil?
+		@client_thread = nil
+		@client = nil
+		
+		Process.exit
 	end
 	
 	def login
@@ -50,10 +77,10 @@ class LiftE < Gosu::Window
 		rescue Exception => e
 			$logger.info "Could not connect to #{HOST}:#{PORT}"
 			$logger.error e.to_s
-		end
+    end
 		
 		$logger.info "Logging in..."
-		@client.puts("macbury|haslo")
+		@client.puts([ARGV[0], Digest::SHA1.hexdigest(ARGV[1])].join("|"))
 		
 		if @client.readline.strip == "PLAYER|AUTHORIZED|END"
 			$logger.info "Logging in sucessful..."
@@ -63,7 +90,7 @@ class LiftE < Gosu::Window
 	      rescue => detail
 	        $logger.log detail if DEV_MODE
 	      ensure
-	        $logger.log "Client is disconnecting"
+	        disconnect
 	      end
 			end
 

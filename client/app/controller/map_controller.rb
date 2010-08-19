@@ -1,0 +1,4 @@
+class MapController < GameController
+
+	
+end

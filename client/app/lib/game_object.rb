@@ -41,7 +41,19 @@ class GameObject
   def size
     [self.width, self.height]
   end
-    
+  
+	def snap_to_grid
+		self.position.snap
+	end
+
+	def snap_to_x_grid
+		self.position.tile_x = self.position.tile_x
+	end
+
+	def snap_to_y_grid
+		self.position.tile_y = self.position.tile_y
+	end
+
   def hide!
     @visible = false
   end
@@ -63,8 +75,7 @@ class GameObject
   end
 
   def draw
-		load_resources if @image.nil?
-    @image.draw(@position.x, @position.y, @zorder, 1, 1) if @image && @visible
+    @image.draw(@position.screen_x, @position.screen_y, 3) if @image && @visible
   end
  
 end  

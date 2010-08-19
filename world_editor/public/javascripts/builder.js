@@ -1,8 +1,5 @@
 var builder = {
 	library: [],
-	
-
-	
 	openDialog: function () {
 		$.ajax({
 			type: "GET",
@@ -16,13 +13,13 @@ var builder = {
 				
 				$('#open_dialog li a').live("click", function () {
 					$('#open_dialog').dialog("close");
-
+					var a = $(this);
 					$.ajax({
 						type: "GET",
 						url: $(this).attr("href"),
 						dataType: "json",
 						success: function(json){
-							map_editor.load_map(json, $(this).attr("href"));
+							map_editor.load_map(json, a.attr("href"));
 						}
 					 });
 

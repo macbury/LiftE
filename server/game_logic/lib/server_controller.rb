@@ -4,6 +4,11 @@ class ServerController
 	
 	def initialize(server_contex)
 		self.server_contex = server_contex
+		setup
+	end
+	
+	def setup
+		
 	end
 	
 	def clients

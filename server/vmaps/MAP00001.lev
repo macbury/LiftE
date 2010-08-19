@@ -1,0 +1,11 @@
+{
+	"width": 25,
+	"height": 30,
+	"zone": "Plansza startowa",
+	"name": "Plac zabaw",
+	"vmap": [
+		{ "x": 0, "y": 0, "passable": false },
+		{ "x": 1, "y": 1, "passable": false },
+		{ "x": 2, "y": 2, "passable": false }
+	]
+}

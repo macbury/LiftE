@@ -30,11 +30,19 @@ class Map
 										:layer2 => Layer.new(self.width, self.height), 
 										:layer3 => Layer.new(self.width, self.height) }
 		
+		$logger.info "Loading tiles from map JSON file..."
 		rmc["map"].each do |layer_name, layer_content|
+			layer_sym = layer_name.to_sym
 			layer_content.each do |raw_tile|
-				tile = self.chipsets[raw_tile["chipset"]].tiles[raw_tile["id"]]
-				self.layers[layer_name.to_sym].set_tile_for_cords(tile, raw_tile["x"], raw_tile["y"])
+				$logger.info "#{layer_sym} <- #{raw_tile["id"].to_i} <- #{raw_tile["chipset"]} x: #{raw_tile["x"]} y: #{raw_tile["y"]}" if DEV_MODE
+				tile = self.chipsets[raw_tile["chipset"]].tiles[raw_tile["id"].to_i]
+				
+				self.layers[layer_sym].set_tile_for_cords(tile, raw_tile["x"].to_i, raw_tile["y"].to_i)
 			end
+		end
+		
+		self.layers.each do |name, controller|
+			$logger.info "[COUNT] #{name} -> #{controller.tiles_count}"
 		end
 		
 		self.visible_x, self.visible_y = Point.pixels_to_tiles($window.width, $window.height)
@@ -42,15 +50,19 @@ class Map
 		$logger.info "Visible tiles for this resolution: #{self.visible_x}x#{self.visible_y}"
 	end
 	
+	def draw_tile_for_cords(x, y, layer_name)
+		tile = self.layers[layer_name].tile_for_cords(x,y)
+		return if tile.nil?
+		pixel_x, pixel_y = Point.tile_to_pixels(x, y)
+		tile.image.draw(pixel_x, pixel_y, @@layer_z_order[layer_name], 1, 1)
+	end
+	
 	def draw
-		self.layers.each do |layer_name, layer_controller|
-			for	x in (0..self.visible_x)
-				for	y in (0..self.visible_y)
-					pixel_x, pixel_y = Point.tile_to_pixels(x, y)
-					tile = layer_controller.tile_for_cords(x,y)
-					next if tile.nil?
-					tile.image.draw(pixel_x, pixel_y, @@layer_z_order[layer_name])
-				end
+		for	x in (0..self.visible_x)
+			for	y in (0..self.visible_y)
+				draw_tile_for_cords(x, y, :layer1)
+				draw_tile_for_cords(x, y, :layer2)
+				draw_tile_for_cords(x, y, :layer3)
 			end
 		end
 	end

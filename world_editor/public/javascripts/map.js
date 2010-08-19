@@ -27,22 +27,91 @@ function Map(content, file_name) {
 
 $.extend(Map.prototype, {
 	
+	content: function(){
+		var self = this;
+		out = {
+			width: this.width,
+			height: this.height,
+			name: this.name,
+			zone: this.zone,
+			
+			chipsets: this.used_chipsets(),
+			
+			map: {
+				layer1: [],
+				layer2: [],
+				layer3: [],
+			},
+			
+			game_objects: []
+		};
+		
+		$.each(self.layers, function (layer_name, layer_content) {
+			for (var x=0; x < self.width; x++) {
+				for (var y=0; y < self.height; y++) {
+					var tile = self.layers[layer_name][x][y];
+					
+					if (tile["id"] != undefined) {
+						out["map"][layer_name].push(tile);
+					}
+				}
+			}
+		});
+		
+		return out;
+	},
+	
+	used_chipsets: function(){
+		var self = this;
+		var chipsets_used = [];
+		
+		$.each(self.layers, function (layer_name, layer_content) {
+			for (var x=0; x < self.width; x++) {
+				for (var y=0; y < self.height; y++) {
+					var tile = self.layers[layer_name][x][y];
+					
+					if (tile["id"] != undefined) {
+						chipsets_used.push(tile["chipset"]);
+					}
+				}
+			}
+		});
+		
+		return chipsets_used.unique();
+	},
+	
 	load_map_from_content: function(content){
 		var self = this;
 		
 		$.each(content, function (layer_name, tiles) {
 			$.each(tiles, function (index, tile) {
-				self.layers[layer_name][tile.x][tile.y] = tile;
+				if (tile != undefined || tile != {}) {
+					self.layers[layer_name][tile.x][tile.y] = tile;
+				};
 			});
 		});
+	},
+	
+	delete_tile_for_cords: function(current_layer, x, y){
+		this.layers[current_layer][x][y] = {};
 	},
 	
 	set_tile_for_cords: function(layer, chipset, tile_id, x, y){
 		this.layers[layer][x][y] = { "x": x, "y": y, "chipset": chipset, "id": tile_id };
 	},
 	
-	draw: function(contex, layer, startX, startY, width, height){
+	fill_tile_for_cords: function(layer, chipset, tile_id){
 		var self = this;
+		for (var x=0; x < self.width; x++) {
+			for (var y=0; y < self.height; y++) {
+				self.set_tile_for_cords(layer, chipset, tile_id, x, y);
+			}
+		}
+	},
+	
+	draw: function(contex, actual_layer, startX, startY, width, height){
+		var self = this;
+		//var actual_layer_index = parseInt(actual_layer.replace("layer", ""));
 		$.each(self.layers, function (layer_name, layer_content) {
 			for (var x=startX; x < width; x++) {
 				for (var y=startY; y < height; y++) {

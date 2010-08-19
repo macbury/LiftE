@@ -4,6 +4,7 @@ class LiftEServer < GServer
 		super(port, *args)
 
 		@clients = {}
+		@map_controller = MapController.new(self)
 		@player_controller = PlayerController.new(self)
 		@sync_mutex = Mutex.new
 	end
@@ -24,15 +25,17 @@ class LiftEServer < GServer
 			password = args[1]
 
 			player = Player.authorize(email, password)
-
+			$logger.info "Authorizing player with #{email} and #{password}" if DEV_MODE
+			
 			if player
+				#disconnect(@clients[player]) unless @clients[player].nil?
+				
 				@clients[player] = client
-				brodcast(player.client_joined(player.id), player)
 				log("Player have been authorized: #{player.id}")
+				brodcast(player.client_joined(player.id), player)
 				send_to(player, player.client_authorized)
 
-				while @clients[player]
-					command = client.readline.strip
+				while command = client.readline.strip
 					args = command.split("|")
 					controller = args[0]
 					
@@ -46,15 +49,21 @@ class LiftEServer < GServer
 					
 					if controller =~ /PLAYER/i
 						@player_controller.exec_command(command, player)
+					elsif controller =~ /MAP/i
+						@map_controller.exec_command(command, player)
+					else
+						#client.puts "PLAYER|UNKNOW_COMMAND|END"
+						#disconnect_player(player)
 					end
 				end
 
 				disconnect_player(player) if player
 			else
 				log("Player unauthorized: wrong email or password")
-				client.puts "PLAYER|UNAUTHORIZED"
+				client.puts "PLAYER|UNAUTHORIZED|END"
 			end
 		rescue Exception => e
+			log(e.to_s)
 			log(e.backtrace.join("\n"))
 			disconnect(client, -1)
 		end
@@ -94,7 +103,7 @@ class LiftEServer < GServer
  
 	def disconnect_player(player)
 		log("Player is disconnecting: #{player.id}")
-		brodcast(player.client_disconnected(player.id), player)
+		brodcast(@player_controller.client_disconnected(player.id), player)
 		disconnect(@clients[player])
 	end
 end

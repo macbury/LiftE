@@ -1,0 +1,4 @@
+database:
+  name: simple_game_dev
+  host: localhost
+  password: password

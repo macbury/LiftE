@@ -15,9 +15,9 @@ class PlayerController < ServerController
 			:hp => 24,
 			:max_hp => 24,
 			:rage => 0,
-			:x => 5,
-			:y => 5,
-			:map => "MAP00001"
+			:x => player.x,
+			:y => player.y,
+			:map => player.map
 		}))
 	end
 	
