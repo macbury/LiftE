@@ -21,8 +21,7 @@ function Map(content, file_name) {
 	})
 	
 	self.load_map_from_content(content["map"]);
-	
-	document.title = "["+this.zone+"] > " + this.name;
+
 }
 
 $.extend(Map.prototype, {

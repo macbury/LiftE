@@ -12,6 +12,9 @@ class Player
 		self.id = (rand * 999999).round
 	end
 	
+	def update(deltaTime=0, client)
+	end
+	
 	def ==(other)
 		other.respond_to?(:id) && self.id == other.id
 	end

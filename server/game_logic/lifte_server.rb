@@ -1,4 +1,5 @@
 class LiftEServer < GServer
+	attr_accessor :delta_time
 	
 	def initialize(port=9666, *args)
 		super(port, *args)
@@ -7,6 +8,25 @@ class LiftEServer < GServer
 		@map_controller = MapController.new(self)
 		@player_controller = PlayerController.new(self)
 		@sync_mutex = Mutex.new
+		@update_interval = UPDATE_INTERVAL / 1000.0
+		@game_objects_thread = Thread.new(self) do |server_contex|
+			while true
+				start = Time.now
+
+				server_contex.clients.each do |player, client|
+					begin
+						player.update(server_contex.delta_time, client)
+					rescue Exception => e
+						disconnect_player(player)
+						$logger.error e.to_s
+						$logger.error(e.backtrace.join("\n")) if DEV_MODE
+					end
+				end
+
+				sleep(@update_interval)
+				server_contex.delta_time = (Time.now - start) * 1000
+			end
+		end
 	end
  
 	def clients
@@ -35,7 +55,7 @@ class LiftEServer < GServer
 				brodcast(player.client_joined(player.id), player)
 				send_to(player, player.client_authorized)
 
-				while command = client.readline.strip
+				while client && command = client.readline.strip
 					args = command.split("|")
 					controller = args[0]
 					

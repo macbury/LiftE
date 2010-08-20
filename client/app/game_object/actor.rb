@@ -20,6 +20,8 @@ class Actor < GameObject
 		new_waypoints.each do |vector_array|
 			@waypoints << Point.new_tile(vector_array[0], vector_array[1])
 		end
+		
+		self.position = @waypoints.first
 	end
 	
 	def update(delta_time=0)
@@ -49,7 +51,7 @@ class Actor < GameObject
 				@frame_name = :right
 			elsif @moving_vector == Point.up
 				@frame_name = :up
-			elsif
+			elsif @moving_vector == Point.down
 				@frame_name = :down
 			end
 		end

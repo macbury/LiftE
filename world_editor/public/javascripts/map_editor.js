@@ -34,6 +34,7 @@ var map_editor = {
 			var x = e.pageX - offset.left;
 			var y = e.pageY - offset.top;
 			map_editor.mouse_pos = new Point(x, y);
+			map_editor.render_title();
 			//console.log("X :" + x + "("+(map_editor.mouse_pos.tile_x())+") Y:" + y + "("+(map_editor.mouse_pos.tile_y())+")" );
 			//map_editor.redraw();
 		});
@@ -96,6 +97,10 @@ var map_editor = {
 		
 		setTimeout(map_editor.calculate_draw_size, 500);
 		map_editor.redraw();
+	},
+	
+	render_title: function(){
+		document.title = "["+this.map.zone+"] > " + this.map.name + " - " + "x: " + this.mouse_pos.tile_x() + " y: " + this.mouse_pos.tile_y();
 	},
 	
 	select_chipset: function(pos){

@@ -20,7 +20,7 @@ require "./game_logic/lifte_server"
 $stderr.sync = $stdout.sync = true 
 
 DEV_MODE = ARGV.include?("--dev")
-
+UPDATE_INTERVAL = 16.666666
 FILE_ROOT = File.dirname(File.expand_path($0))
 
 $logger = Logger.new(STDOUT)
