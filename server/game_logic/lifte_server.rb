@@ -12,14 +12,13 @@ class LiftEServer < GServer
 		@game_objects_thread = Thread.new(self) do |server_contex|
 			while true
 				start = Time.now
-
-				server_contex.clients.each do |player, client|
+				server_contex.clients.each do |player_id, player|
 					begin
-						player.update(server_contex.delta_time, client)
+						player.update(server_contex.delta_time)
 					rescue Exception => e
-						disconnect_player(player)
 						$logger.error e.to_s
 						$logger.error(e.backtrace.join("\n")) if DEV_MODE
+						disconnect(player.connection,  -1)
 					end
 				end
 
@@ -49,10 +48,11 @@ class LiftEServer < GServer
 			
 			if player
 				#disconnect(@clients[player]) unless @clients[player].nil?
-				
-				@clients[player] = client
-				log("Player have been authorized: #{player.id}")
-				brodcast(player.client_joined(player.id), player)
+				player.connection = client
+				player.npc_delegate = @player_controller
+				@clients[player.to_id] = player
+				log("Player have been authorized: #{player.to_id}")
+				brodcast_to_near_players(player.client_joined(player.to_id), player)
 				send_to(player, player.client_authorized)
 
 				while client && command = client.readline.strip
@@ -65,7 +65,7 @@ class LiftEServer < GServer
 						command += rest_of_command
 					end
 					
-					$logger.info "Recived command: #{command} from player #{player.id}" if DEV_MODE
+					$logger.info "Recived command: #{command} from player #{player.to_id}" if DEV_MODE
 					
 					if controller =~ /PLAYER/i
 						@player_controller.exec_command(command, player)
@@ -77,7 +77,7 @@ class LiftEServer < GServer
 					end
 				end
 
-				disconnect_player(player) if player
+				disconnect(player.connection,  -1) if player
 			else
 				log("Player unauthorized: wrong email or password")
 				client.puts "PLAYER|UNAUTHORIZED|END"
@@ -91,39 +91,58 @@ class LiftEServer < GServer
  
 	def brodcast(command, owner=nil)
 		$logger.info "Brodcasting command: #{command}" if DEV_MODE
-		@clients.each do |player, client|
-			client.puts(command) unless player == owner
+		@clients.each do |player_id, player|
+			player.connection.puts(command) unless player == owner
 		end
 	end
  
 	def send_to(players, command)
 		if players.class == Array
-			$logger.info "Sending command: #{command} to players: #{players.map(&:id)}" if DEV_MODE
-			@clients.each do |player, client|
-				client.puts(command) if players.include?(player)
+			$logger.info "Sending command: #{command} to players: #{players.map(&:to_id)}" if DEV_MODE
+			@clients.each do |player_id, player|
+				player.connection.puts(command) if players.include?(player)
 			end
 		else
-			$logger.info "Sending command: #{command} to player: #{players.id}" if DEV_MODE
-			@clients.each do |player, client|
-				client.puts(command) if player == players
+			$logger.info "Sending command: #{command} to player: #{players.to_id}" if DEV_MODE
+			@clients.each do |player_id, player|
+				player.connection.puts(command) if player == players
 			end
+		end
+	end
+	
+	def brodcast_to_near_players(command, player)
+		send_to(players_near_player(player), command)
+	end
+	
+	def players_near_player(main_player)
+		near = []
+		@clients.each do |player_id, player|
+			next if player.map != main_player.map || player.id == main_player.id
+			
+			if player.position.distance_to_tile(main_player.position) <= main_player.field_of_view
+				near << player
+			end
+		end
+		
+		$logger.info("Players near player #{main_player.to_id}: #{near.map(&:to_id)}") if DEV_MODE
+		
+		return near
+	end
+	
+	def disconnecting(client, port)
+		self.clients.each do |player_id, player|
+			next unless player.connection == client
+		  
+			self.clients.delete(player_id) 
+	    log("Removed player from client list: #{player_id}")
+			begin
+				brodcast(@player_controller.client_disconnected(player_id), player)
+			rescue Exception => e
+				$logger.error e
+			end
+			
+	    break
 		end
 	end
 
-	def disconnecting(client, port)
-		super(client,port)
-		@clients.each do |player, s_client|
-			if s_client == client
-		  	@clients.delete(player) 
-		    log("Removed player from client list: #{player.id}")
-		    break
-		  end
-		end
-	end
- 
-	def disconnect_player(player)
-		log("Player is disconnecting: #{player.id}")
-		brodcast(@player_controller.client_disconnected(player.id), player)
-		disconnect(@clients[player])
-	end
 end

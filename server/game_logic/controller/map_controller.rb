@@ -19,23 +19,20 @@ class MapController < ServerController
 	end
 	
 	def go_to_cords(player, end_x, end_y)
-		end_pos = Tile.new(end_x, end_y)
-		
+		end_pos = Tile.new(end_x.to_i, end_y.to_i)
+		player.waypoints = []
 		if @@vmaps[player.map].wall?(end_pos)
 			$logger.info "This is wall"
 			send_to(player, player.client_path_unavailable)
 		else
-			$logger.info "Generating way for map #{player.map} to cords #{end_x}:#{end_y} from #{player.x}:#{player.y}"
-			
-			start_pos = Tile.new(player.x, player.y)
+			$logger.info "Generating way for map #{player.map} to cords #{end_x}:#{end_y} from #{player.position.tile_x}:#{player.position.tile_y} for player #{player.to_id}"
 
-			pf = PathFinder.new(@@vmaps[player.map], start_pos, end_pos)
+			pf = PathFinder.new(@@vmaps[player.map], player.position.to_tile, end_pos)
 			pf.find_way
-
-			player.x = end_x
-			player.y = end_y
+			
+			player.waypoints = pf.way.map(&:to_point)
+			#send_to(player, player.client_move_using_path(pf.to_response))
 			$logger.info "Calculated path: #{pf.to_response}" if DEV_MODE
-			send_to(player, player.client_move_using_path(pf.to_response))
 		end
 	end
 	

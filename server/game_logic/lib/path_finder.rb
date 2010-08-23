@@ -90,8 +90,12 @@ class PathFinder
 		end
 		
 		self.way = ret_way.reverse
-		self.way.insert(0, start_pos)
-		self.way << end_pos
+		unless self.way.empty?
+			self.way.insert(0, start_pos) unless self.way.include?(start_pos)
+			self.way << end_pos
+		end
+
+		self.way
 	end
 	
 	def debug
@@ -138,6 +142,7 @@ class PathFinder
 			"00#{n}"
 		end
 	end
+	
 	
 	def to_response
 		self.way.map { |waypoint| [waypoint.x, waypoint.y] }

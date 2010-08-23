@@ -23,10 +23,10 @@ module RemoteMethods
 		end
 		
 		if method_is_avaliable && respond_to?(method)
-			$logger.info "Executing method: #{method} for class #{self.class.name} with arguments: #{arg.map{|a| a.inspect }.join(", ")}" 
+			$logger.info "Executing method: #{method} for class #{self.class.name} with arguments: #{arg.map{|a| a.inspect }.join(", ")}" if DEV_MODE
 			self.send(method, *arg)
 		else
-			$logger.info "Undefined method: #{method} for class #{self.class.name} and arguments: #{arg.map{|a| a.inspect }.join(", ")}" 
+			$logger.info "Undefined method: #{method} for class #{self.class.name} and arguments: #{arg.map{|a| a.inspect }.join(", ")}"  if DEV_MODE 
 		end
 	end
 	

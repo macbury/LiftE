@@ -4,8 +4,11 @@ require "yaml"
 require 'base64'
 require "json"
 require "./game_logic/lib/gserver"
+require "../shared/lib/point"
 require "../shared/lib/remote_object"
 require "../shared/lib/remote_methods"
+require "../shared/lib/game_objects/npc_locomotion"
+require "../shared/lib/remote_id"
 require "./game_logic/models/player"
 
 require "./game_logic/lib/tile"
@@ -20,7 +23,7 @@ require "./game_logic/lifte_server"
 $stderr.sync = $stdout.sync = true 
 
 DEV_MODE = ARGV.include?("--dev")
-UPDATE_INTERVAL = 16.666666
+UPDATE_INTERVAL = 20.99999
 FILE_ROOT = File.dirname(File.expand_path($0))
 
 $logger = Logger.new(STDOUT)

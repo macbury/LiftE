@@ -2,17 +2,23 @@ require "digest/sha2"
 
 class Player
 	include RemoteObject
-	attr_accessor :email, :x, :y, :map, :id
+	include RemoteId
+	include NPC::Locomotion
 	
-	def initialize(new_email)
+	attr_accessor :email, :position, :map, :id, :connection, :field_of_view
+	
+	def initialize(new_email, client=nil)
 		self.email = new_email
-		self.x = 5
-		self.y = 4
+		self.connection = client
+		self.position = Point.new_tile(5,4)
 		self.map = "MAP00001"
+		self.field_of_view = 22
 		self.id = (rand * 999999).round
+		setup_locomotion
 	end
 	
-	def update(deltaTime=0, client)
+	def update(deltaTime=0)
+		move_using_waypoints(deltaTime)
 	end
 	
 	def ==(other)

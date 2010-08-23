@@ -77,6 +77,10 @@ class Point
 		return (b.x - self.x).abs + (b.y - self.y).abs
 	end
 	
+	def distance_to_tile(b)
+		return (b.tile_x - self.tile_x).abs + (b.tile_y - self.tile_y).abs
+	end
+	
 	def distance_to_center_of_tile(other_point)
 		a = self.tile_center_point
 		b = other_point.tile_center_point
@@ -105,8 +109,8 @@ class Point
 	end
 	
 	def set_tile_pos(new_x, new_y)
-		self.tile_x = new_x
-		self.tile_y = new_y
+		self.tile_x = new_x.to_i
+		self.tile_y = new_y.to_i
 	end
 	
 	def tile_x
@@ -114,7 +118,7 @@ class Point
 	end
 	
 	def tile_x=(new_x)
-		self.x = new_x * TILE_WIDTH
+		self.x = new_x.to_i * TILE_WIDTH
 	end
 	
 	def tile_y
@@ -122,11 +126,15 @@ class Point
 	end
 	
 	def tile_y=(new_y)
-		self.y = new_y * TILE_HEIGHT
+		self.y = new_y.to_i * TILE_HEIGHT
 	end
 	
 	def to_tile_cords
 		[tile_x, tile_y]
+	end
+	
+	def to_tile
+		Tile.new(self.tile_x, self.tile_y)
 	end
 	
 	def self.pixels_to_tiles(tx,ty)

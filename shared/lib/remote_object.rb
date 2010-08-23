@@ -4,7 +4,7 @@ require 'base64'
 module RemoteObject
 	
 	def method_missing(method, *args, &block)
-		if method =~ /client_/i || method =~ /server_/i
+		if (method =~ /client_/i || method =~ /server_/i) && !self.respond_to?(method)
 			command = []
 			command << self.class.name.upcase.gsub(/controller/i, '')
 			command << method.to_s.gsub(/client_/i, '').gsub(/server_/i, '').upcase
