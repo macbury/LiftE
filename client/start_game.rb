@@ -20,7 +20,9 @@ $logger = Logger.new(STDOUT)
 DEV_MODE = ARGV.include?("--dev")
 
 require "../shared/lib/point"
+require "../shared/lib/game_objects/npc_locomotion"
 require "../shared/lib/remote_object"
+require "../shared/lib/remote_id"
 require "../shared/lib/remote_methods"
 require "./app/lib/game_controller"
 require "./app/lib/game_object"

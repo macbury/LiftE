@@ -1,0 +1,12 @@
+{
+	"image": "woods.png",
+	"columns": 16,
+	"rows": 16,
+	"name": "woods",
+	"tiles": [
+		{ "passable": true, "id": 0 },
+		{ "passable": true, "id": 1 },
+		{ "passable": true, "id": 2 },
+		{ "passable": true, "id": 3 }
+	]
+}

@@ -1,0 +1,7 @@
+{
+	"image": "sand.png",
+	"columns": 3,
+	"name": "sand",
+	"rows": 4,
+	"tiles": []
+}

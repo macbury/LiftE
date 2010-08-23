@@ -1,27 +1,34 @@
 class LiftE < Gosu::Window
-	attr_accessor :player_controller, :map_controller
+	attr_accessor :player_controller, :map_controller, :game_objects
 	@@sync_mutex = Mutex.new
 	
 	def initialize
 		self.player_controller = PlayerController.new(self)
 		self.map_controller = MapController.new(self)
-		@game_objects = []
+		self.game_objects = {}
 		$window = self
 		@last_value = 0
 		@milliseconds_since_last_tick = 0
 		@fps_counter = FPSCounter.new
-		
+		@cross_pos = Point.new_tile(0,0)
     super(800,600,!DEV_MODE)
-
+		
+		$logger.info "Player field of view: #{self.field_of_view}"
 		$logger.info "Loading cursor..."
 		@cursor = Gosu::Image.new(self, File.join([FILE_ROOT, 'assets/graphics/gui/cursor.png']), false)
+		@cross = Gosu::Image.new(self, File.join([FILE_ROOT, 'assets/graphics/gui/cross.png']), false)
 
 		login
 	end
 	
+	def field_of_view
+		end_pos = Point.new(self.width, self.height)
+		start_pos = Point.new_tile((end_pos.tile_x / 2).round, (end_pos.tile_y / 2).round)
+		start_pos.distance_to_tile(end_pos)
+	end
 	
 	def add_game_object(new_game_object)
-		@game_objects << new_game_object unless @game_objects.include?(new_game_object)
+		self.game_objects[new_game_object.to_id] = new_game_object
 	end
 	
 	def delta_time
@@ -37,25 +44,37 @@ class LiftE < Gosu::Window
 		
 		@player_controller.update(self.delta_time)
 		
-		@game_objects.each do |go|
+		self.visible_game_objects.each do |id,go|
 			go.update(self.delta_time)
 		end
+	end
+	
+	def visible_game_objects
+		#TODO: find only visible objects
+		self.game_objects
 	end
 	
 	def button_up(id)
 		if id == Gosu::MsRight
 			p = Point.new(self.mouse_x, self.mouse_y)
 			$logger.info "Clicked on tile x:#{p.tile_x} y:#{p.tile_y}"
+			@cross_pos.set_tile_pos(p.tile_x, p.tile_y)
 			self.map_controller.server_go_to_cords(p.tile_x, p.tile_y)
     end
 	end
 	
 	def draw
 		self.player_controller.draw
-		@game_objects.each do |go|
+		self.visible_game_objects.each do |id, go|
 			go.draw
 		end
 		
+		self.draw_gui
+		
+	end
+	
+	def draw_gui
+		@cross.draw(@cross_pos.screen_x, @cross_pos.screen_y, 3)
 		@cursor.draw(self.mouse_x, self.mouse_y, 1000)
 	end
 	
@@ -107,7 +126,7 @@ class LiftE < Gosu::Window
 	end
 	
 	def serve(client)
-		self.player_controller.server_get_info_for_current_actor
+		self.player_controller.server_get_info_for_current_actor(self.field_of_view)
 		
 		while true
 			command = @client.readline.strip

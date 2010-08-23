@@ -3,7 +3,7 @@ require "json"
 class Map
 	attr_accessor :layers, :name, :zone, :width, :height, :music, :chipsets
 	attr_accessor :scroll_x, :scroll_y, :visible_x, :visible_y
-	@@layer_z_order = { :layer1 => 1, :layer2 => 2, :layer3 => 4 } #zorder 3 is for game objects!
+	@@layer_z_order = { :layer1 => 1, :layer2 => 2, :layer3 => 5 } #zorder 3 is for game objects!
 	
 	def initialize(map_name)
 		map_path = File.join [LiftE.root, "/assets", "/maps", "/#{map_name}.lem"]

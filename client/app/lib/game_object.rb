@@ -3,7 +3,7 @@ class GameObject
   attr_reader :center, :height, :width
       
   def initialize(options = {})
-    super
+    super(options)
     
     if options[:image].is_a?(Gosu::Image)
       @image = options[:image]
@@ -21,7 +21,7 @@ class GameObject
 		else
 			@position = Point.new(options[:x] || 0, options[:y] || 0)
 		end
-    @zorder = options[:zorder] || 3
+    @zorder = options[:zorder] || 4
 
 		$window.add_game_object(self)
   end
@@ -77,5 +77,8 @@ class GameObject
   def draw
     @image.draw(@position.screen_x, @position.screen_y, 3) if @image && @visible
   end
- 
+	
+	def to_id
+		"game_object_#{self.id}".to_sym
+	end
 end  
